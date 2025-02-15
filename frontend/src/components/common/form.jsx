@@ -43,7 +43,6 @@ const CommonForm = ({ formControls, formData, setFormData, onSubmit, buttonText 
                     } value={value}>
                         <SelectTrigger className='w-full'>
                             <SelectValue placeholder={getControlItem.placeholder} />
-
                         </SelectTrigger>
                         <SelectContent>
                             {
@@ -73,7 +72,6 @@ const CommonForm = ({ formControls, formData, setFormData, onSubmit, buttonText 
                             }
                         )}
                     >
-
                     </Textarea>
                 )
                 break;
@@ -109,7 +107,7 @@ const CommonForm = ({ formControls, formData, setFormData, onSubmit, buttonText 
                     </div>)
                 }
             </div>
-            <Button type="submit" className="mt-2 w-full">
+            <Button type="submit" className="mt-2 w-full bg-sky-700 hover:bg-sky-500">
                 {buttonText || 'Submit'}
             </Button>
         </form>

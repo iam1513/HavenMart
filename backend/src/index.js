@@ -3,6 +3,8 @@ const cookieParser = require("cookie-parser")
 const cors = require("cors")
 const { dbConfig, serverConfig } = require('./config')
 const app = express()
+const authRouter = require('./routes/auth/auth-routes')
+
 app.use(
     cors({
         origin: 'http://localhost:5173/',
@@ -21,6 +23,7 @@ app.use(
 app.use(cookieParser)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/api/auth', authRouter);
 
 app.listen(serverConfig.PORT, async () => {
     console.log(`Server live on ${serverConfig.PORT}`)

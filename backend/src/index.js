@@ -7,11 +7,11 @@ const authRouter = require('./routes/auth/auth-routes')
 
 app.use(
     cors({
-        origin: 'http://localhost:5173/',
+        origin: 'http://localhost:5173',
         methods: ['GET', 'POST', 'DELETE', 'PUT'],
         allowedHeaders: [
             "Content-Type",
-            "AUthorization",
+            "Authorization", 
             "Cache-Control",
             "Expires",
             "Pragma"
@@ -20,13 +20,18 @@ app.use(
     })
 )
 
-app.use(cookieParser)
+app.use(cookieParser())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRouter);
 
 app.listen(serverConfig.PORT, async () => {
-    console.log(`Server live on ${serverConfig.PORT}`)
-    dbConfig.connect;
-    console.log("Database connection successful")
-})
+    try {
+        await dbConfig.connect();
+        console.log("Database connection successful");
+        console.log(`Server live on ${serverConfig.PORT}`);
+    } catch (error) {
+        console.error("Database connection failed:", error);
+        process.exit(1);
+    }
+});

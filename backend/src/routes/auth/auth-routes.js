@@ -1,13 +1,20 @@
 const express = require('express')
-const { registerUser, loginUser } = require('../../controllers/auth/auth-controller')
+const { registerUser, loginUser, logoutUser } = require('../../controllers/auth/auth-controller')
 const router = express.Router();
 
 router.post('/register', registerUser)
 
 router.post('/login', loginUser)
-// router.get('/info', (req, res) => {
-//     res.json({
-//         message: "This is the auth route"
-//     })
-// })
+
+router.post('/logout', logoutUser)
+router.get('/check-auth',(req,res) => {
+    const user = req.user
+
+    res.status(200).json({
+        success: true,
+        message: "User is authenticated",
+        user
+    })
+})
+
 module.exports = router

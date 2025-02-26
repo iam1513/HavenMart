@@ -4,6 +4,7 @@ const cors = require("cors")
 const { dbConfig, serverConfig } = require('./config')
 const app = express()
 const authRouter = require('./routes/auth/auth-routes')
+const adminProductsRouter = require('./routes/admin/products-route')
 
 app.use(
     cors({
@@ -11,7 +12,7 @@ app.use(
         methods: ['GET', 'POST', 'DELETE', 'PUT'],
         allowedHeaders: [
             "Content-Type",
-            "Authorization", 
+            "Authorization",
             "Cache-Control",
             "Expires",
             "Pragma"
@@ -24,6 +25,7 @@ app.use(cookieParser())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRouter);
+app.use('/api/admin/products', adminProductsRouter);
 
 app.listen(serverConfig.PORT, async () => {
     try {

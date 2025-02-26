@@ -130,4 +130,4 @@ const authMiddleware = async (req, res, next) => {
     }
 }
 
-module.exports = { registerUser, loginUser, logoutUser }
+module.exports = { registerUser, loginUser, logoutUser, authMiddleware }

@@ -1,6 +1,7 @@
 const { imageUploadUtils } = require("../../helpers/cloudinary")
-const product = require("../../models/product")
-
+const Product = require("../../models/product")
+const ProductService = require("../../services/admin/product-service")
+const productService = new ProductService()
 const handleImageUpload = async (req, res) => {
     try {
 
@@ -28,11 +29,7 @@ const handleImageUpload = async (req, res) => {
 const addProduct = async (req, res) => {
     try {
         const { image, title, description, category, brand, price, salePrice, totalStock } = req.body
-        const newProduct = new product({
-            image, title, description, category, brand, price, salePrice, totalStock
-        })
-
-        await newProduct.save()
+        const newProduct = await productService.addProduct({ image, title, description, category, brand, price, salePrice, totalStock })
 
         res.status(201).json({
             success: "true",
@@ -50,7 +47,7 @@ const addProduct = async (req, res) => {
 // Fetch all products
 const fetchProducts = async (req, res) => {
     try {
-        const listOfProducts = await product.find({})
+        const listOfProducts = await productService.fetchProducts()
         res.status(200).json({
             success: 'true',
             data: listOfProducts
@@ -70,7 +67,7 @@ const editProduct = async (req, res) => {
         const { id } = req.params
         const { image, title, description, category, brand, price, salePrice, totalStock } = req.body
 
-        const findProduct = await product.findById(id)
+        const findProduct = await productService.updateProduct(id, { image, title, description, category, brand, price, salePrice, totalStock })
 
         if (!findProduct) {
             return res.status(404).json({
@@ -78,17 +75,6 @@ const editProduct = async (req, res) => {
                 message: 'Product not found'
             })
         }
-
-        findProduct.image = image || findProduct.image
-        findProduct.title = title || findProduct.title
-        findProduct.description = description || findProduct.description
-        findProduct.category = category || findProduct.category
-        findProduct.brand = brand || findProduct.brand
-        findProduct.price = price || findProduct.price
-        findProduct.salePrice = salePrice || findProduct.salePrice
-        findProduct.totalStock = totalStock || findProduct.totalStock
-
-        await findProduct.save()
         res.status(200).json({
             success: 'true',
             data: findProduct
@@ -107,7 +93,7 @@ const editProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
     try {
         const { id } = req.params
-        const product = await product.findById(id)
+        const product = await productService.deleteProduct(id)
         if (!product) {
             return res.status(404).json({
                 success: 'false',

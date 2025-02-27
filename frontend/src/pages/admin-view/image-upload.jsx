@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Skeleton } from '@/components/ui/skeleton'
 import axios from 'axios'
 import { FileIcon, UploadCloudIcon, XIcon } from 'lucide-react'
 import React, { useEffect, useRef } from 'react'
@@ -11,7 +12,8 @@ const ProductImageUpload = (
         setImageFile,
         uploadedImageUrl,
         setUploadedImageUrl,
-        setImageLoadingState
+        setImageLoadingState,
+        imageLoadingState
     }
 ) => {
 
@@ -77,19 +79,21 @@ const ProductImageUpload = (
 
                 {
                     !imageFile ?
-                        <Label htmlFor="image-upload" className="flex flex-col items-center justify-center h-32 cursor-pointer">
+                        (<Label htmlFor="image-upload" className="flex flex-col items-center justify-center h-32 cursor-pointer">
                             <UploadCloudIcon className='w-10 h-10 text-muted-foreground mb-2' />
                             <span>Drag & Drop or click to upload image</span>
-                        </Label> : <div className='flex items-center justify-between'>
-                            <div className='flex items-center'>
-                                <FileIcon className='w-8 h-8 text-primary mr-2' />
-                            </div>
-                            <p className='text-sm font-medium'>{imageFile.name}</p>
-                            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={() => handleRemoveImage()}>
-                                <XIcon className='w-4 h-4' />
-                                <span className='sr-only'>Remove File</span>
-                            </Button>
-                        </div>
+                        </Label>) :
+                        (imageLoadingState ? <Skeleton className="h-10 bg-gray-200" /> :
+                            <div className='flex items-center justify-between'>
+                                <div className='flex items-center'>
+                                    <FileIcon className='w-8 h-8 text-primary mr-2' />
+                                </div>
+                                <p className='text-sm font-medium'>{imageFile.name}</p>
+                                <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={() => handleRemoveImage()}>
+                                    <XIcon className='w-4 h-4' />
+                                    <span className='sr-only'>Remove File</span>
+                                </Button>
+                            </div>)
                 }
             </div>
         </div>

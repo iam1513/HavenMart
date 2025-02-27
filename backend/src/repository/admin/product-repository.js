@@ -34,8 +34,8 @@ class ProductRepository {
             findProduct.description = product.description || findProduct.description;
             findProduct.category = product.category || findProduct.category;
             findProduct.brand = product.brand || findProduct.brand;
-            findProduct.price = product.price || findProduct.price;
-            findProduct.salePrice = product.salePrice || findProduct.salePrice;
+            findProduct.price = product.price === '' ? 0 : product.price || findProduct.price;
+            findProduct.salePrice = product.salePrice === '' ? 0 : product.salePrice || findProduct.salePrice;
             findProduct.totalStock = product.totalStock || findProduct.totalStock;
 
             await findProduct.save()

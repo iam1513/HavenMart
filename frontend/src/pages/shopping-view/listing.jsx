@@ -3,12 +3,12 @@ import ShoppingProductTile from '@/components/shopping-view/product-tile'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { sortOptions } from '@/config'
-import { fetchProducts } from '@/store/admin/product-slice'
-import { fetchFilteredProducts } from '@/store/shop/products-slice'
+import { fetchFilteredProducts, fetchProductDetails } from '@/store/shop/products-slice'
 import { ArrowUpDown } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { createSearchParams, useSearchParams } from 'react-router-dom'
+import ProductDetailsDialog from './product-details'
 
 function createSearchParamsHelper(filterParams) {
     const queryParams = [];
@@ -28,11 +28,13 @@ const ShoppingListing = () => {
 
     const dispatch = useDispatch()
 
-    const { productList } = useSelector(state => state.shopProducts)
+    const { productList, productDetails } = useSelector(state => state.shopProducts)
 
     const [filters, setFilters] = useState({})
     const [sort, setSort] = useState(null)
     const [searchParams, setSearchParams] = useSearchParams()
+
+    const [openDetailsDialog, setOpenDetailsDialog] = useState(false)
     const categorySearchParam = searchParams.get("category");
     function handleSort(value) {
         setSort(value)
@@ -60,6 +62,10 @@ const ShoppingListing = () => {
         sessionStorage.setItem("filters", JSON.stringify(cpyFilters));
     }
 
+    function handleGetProductDetails(getCurrentProductDetails) {
+        dispatch(fetchProductDetails(getCurrentProductDetails))
+    }
+
     // Fetch list of Products
     useEffect(() => {
         setSort("price-lowtohigh");
@@ -80,13 +86,16 @@ const ShoppingListing = () => {
             );
     }, [dispatch, sort, filters]);
 
+    useEffect(() => {
+        if (productDetails !== null) setOpenDetailsDialog(true)
+    }, [productDetails])
+
     // useEffect(() => {
 
     //     dispatch(
     //         fetchProducts()
     //     )
     // }, [dispatch]);
-
 
 
     return (
@@ -126,11 +135,12 @@ const ShoppingListing = () => {
                 <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4'>
                     {
                         productList && productList.length > 0 ?
-                            productList.map(productItem => <ShoppingProductTile product={productItem} />)
+                            productList.map(productItem => <ShoppingProductTile product={productItem} handleGetProductDetails={handleGetProductDetails} />)
                             : null
                     }
                 </div>
             </div>
+            <ProductDetailsDialog open={openDetailsDialog} setOpen={setOpenDetailsDialog} productDetails={productDetails} />
         </div>
     )
 }

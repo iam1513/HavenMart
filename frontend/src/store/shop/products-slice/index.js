@@ -6,15 +6,31 @@ const initialState = {
     productList: []
 }
 
-export const fetchFilteredProducts = createAsyncThunk("/products/fetchProducts",
-    async () => {
-        const result = await axios.get('http://localhost:3000/api/shop/products/get')
+const fetchFilteredProducts = createAsyncThunk(
+    "/products/fetchProducts",
+    async ({ filterParams, sortParams }) => {
+        const queryParams = new URLSearchParams();
 
-        return result?.data
+        // Convert arrays to comma-separated strings
+        Object.keys(filterParams).forEach(key => {
+            if (Array.isArray(filterParams[key])) {
+                queryParams.append(key, filterParams[key].join(','));  // Convert array to string
+            } else {
+                queryParams.append(key, filterParams[key]);
+            }
+        });
+
+        queryParams.append("sortBy", sortParams);
+
+        const queryString = queryParams.toString();  // Convert to query string
+        console.log("Query Params:", queryString);  // Debugging log
+
+        const result = await axios.get(`http://localhost:3000/api/shop/products/get?${queryString}`);
+
+        console.log(result?.data);
+        return result?.data;
     }
-)
-
-
+);
 const shopProductsSlice = createSlice({
     name: "shoppingProducts",
     initialState,
@@ -39,3 +55,5 @@ const shopProductsSlice = createSlice({
 })
 
 export default shopProductsSlice.reducer
+
+export { fetchFilteredProducts }; 

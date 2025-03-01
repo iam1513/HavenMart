@@ -52,7 +52,7 @@ const AdminProducts = () => {
                 image: uploadedImageUrl
             }))
                 .then((data) => {
-                    console.log(data)
+                    
                     if (data?.payload?.success) {
                         dispatch(fetchProducts)
                         setOpenCreateProductDialog(false)
@@ -66,7 +66,7 @@ const AdminProducts = () => {
     }
 
     function handleDelete(getCurrentProductId) {
-        console.log(getCurrentProductId)
+        
         dispatch(deleteProduct(getCurrentProductId))
             .then(data => {
                 if (data?.payload.success) {
@@ -85,7 +85,7 @@ const AdminProducts = () => {
         dispatch(fetchProducts())
     }, [dispatch])
 
-    console.log(productList, "productList")
+ 
 
     return (
         <Fragment>

@@ -24,11 +24,9 @@ const fetchFilteredProducts = createAsyncThunk(
         queryParams.append("sortBy", sortParams);
 
         const queryString = queryParams.toString();  // Convert to query string
-        console.log("Query Params:", queryString);  // Debugging log
 
         const result = await axios.get(`http://localhost:3000/api/shop/products/get?${queryString}`);
 
-        console.log(result?.data);
         return result?.data;
     }
 );
@@ -44,7 +42,11 @@ const fetchProductDetails = createAsyncThunk(
 const shopProductsSlice = createSlice({
     name: "shoppingProducts",
     initialState,
-    reducers: {},
+    reducers: {
+        setProductDetails: (state, action) => {
+            state.productDetails = null
+        }
+    },
     extraReducers: (builder) => {
         builder.addCase(fetchFilteredProducts.pending,
             (state, action) => {
@@ -79,5 +81,5 @@ const shopProductsSlice = createSlice({
 })
 
 export default shopProductsSlice.reducer
-
+export const { setProductDetails } = shopProductsSlice.actions
 export { fetchFilteredProducts, fetchProductDetails }; 

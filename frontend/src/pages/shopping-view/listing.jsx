@@ -82,7 +82,6 @@ const ShoppingListing = () => {
             })
     }
 
-
     // Fetch list of Products
     useEffect(() => {
         setSort("price-lowtohigh");

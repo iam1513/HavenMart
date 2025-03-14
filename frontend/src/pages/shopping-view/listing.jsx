@@ -9,6 +9,8 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { createSearchParams, useSearchParams } from 'react-router-dom'
 import ProductDetailsDialog from './product-details'
+import { addToCart, fetchCartItems } from '@/store/shop/cart-slice'
+import { useToast } from '@/hooks/use-toast'
 
 function createSearchParamsHelper(filterParams) {
     const queryParams = [];
@@ -29,12 +31,13 @@ const ShoppingListing = () => {
     const dispatch = useDispatch()
 
     const { productList, productDetails } = useSelector(state => state.shopProducts)
-
+    const { user } = useSelector(state => state.auth)
     const [filters, setFilters] = useState({})
     const [sort, setSort] = useState(null)
     const [searchParams, setSearchParams] = useSearchParams()
 
     const [openDetailsDialog, setOpenDetailsDialog] = useState(false)
+    const { toast } = useToast()
     const categorySearchParam = searchParams.get("category");
     function handleSort(value) {
         setSort(value)
@@ -66,6 +69,20 @@ const ShoppingListing = () => {
         dispatch(fetchProductDetails(getCurrentProductDetails))
     }
 
+    function handleAddToCart(getCurrentProductId) {
+
+        dispatch(addToCart({ userId: user?.id, productId: getCurrentProductId, quantity: 1 }))
+            .then((data) => {
+                if (data?.payload?.success) {
+                    dispatch(fetchCartItems(user?.id))
+                    toast({
+                        title: "Product is added to the cart."
+                    })
+                }
+            })
+    }
+
+
     // Fetch list of Products
     useEffect(() => {
         setSort("price-lowtohigh");
@@ -96,7 +113,6 @@ const ShoppingListing = () => {
     //         fetchProducts()
     //     )
     // }, [dispatch]);
-
 
     return (
         <div className='grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6'>
@@ -135,7 +151,12 @@ const ShoppingListing = () => {
                 <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4'>
                     {
                         productList && productList.length > 0 ?
-                            productList.map(productItem => <ShoppingProductTile product={productItem} handleGetProductDetails={handleGetProductDetails} />)
+                            productList.map(productItem =>
+                                <ShoppingProductTile
+                                    product={productItem}
+                                    handleGetProductDetails={handleGetProductDetails}
+                                    handleAddToCart={handleAddToCart}
+                                />)
                             : null
                     }
                 </div>

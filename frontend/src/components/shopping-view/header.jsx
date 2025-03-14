@@ -1,5 +1,5 @@
 import { HousePlug, LogOut, Menu, ShoppingCart, UserCog } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet'
 import { Button } from '../ui/button'
@@ -8,6 +8,8 @@ import { shoppingViewHeaderMenuItems } from '@/config'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '../ui/avatar'
 import { logoutUser } from '@/store/auth-slice'
+import UserCartWrapper from './cart-wrapper'
+import { fetchCartItems } from '@/store/shop/cart-slice'
 
 function MenuItems({ closeSheet }) {
     return (
@@ -17,7 +19,7 @@ function MenuItems({ closeSheet }) {
                     className='text-sm font-medium'
                     key={menuItem.id}
                     to={menuItem.path}
-                    onClick={closeSheet} 
+                    onClick={closeSheet}
                 >
                     {menuItem.label}
                 </Link>
@@ -27,7 +29,9 @@ function MenuItems({ closeSheet }) {
 }
 
 function HeaderRightContent() {
+    const { cartItems } = useSelector((state) => state.shopCart)
     const { user } = useSelector((state) => state.auth)
+    const [openCartSheet, setOpenCartSheet] = useState(false)
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
@@ -35,11 +39,22 @@ function HeaderRightContent() {
         dispatch(logoutUser())
     }
 
+    useEffect(() => {
+        dispatch(fetchCartItems(user?.id))
+    }, [dispatch])
     return (
         <div className='flex lg:items-center lg:flex-row flex-col gap-4'>
-            <Button variant='outline' size='icon'>
-                <ShoppingCart className='w-6 h-6' />
-            </Button>
+            <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)}>
+                <Button
+                    variant='outline'
+                    size='icon'
+                    onClick={() => setOpenCartSheet(true)}
+                >
+                    <ShoppingCart className='w-6 h-6' />
+                    <span className='sr-only'>User Cart</span>
+                </Button>
+                <UserCartWrapper cartItems={cartItems && cartItems.items.length > 0 ? cartItems.items : []} />
+            </Sheet>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Avatar className='bg-black'>
@@ -68,7 +83,7 @@ function HeaderRightContent() {
 
 const ShoppingHeader = () => {
     const { isAuthenticated } = useSelector((state) => state.auth)
-    const [isOpen, setIsOpen] = useState(false) 
+    const [isOpen, setIsOpen] = useState(false)
 
     return (
         <header className='sticky top-0 z-40 w-full border-b bg-background'>

@@ -22,7 +22,7 @@ const addAddress = async (req, res) => {
             data: newlyCreatedAddress
         })
 
-    } catch (e) {
+    } catch (error) {
         console.log("Something went wrong in Add Address Controller", error)
         res.status(500).json(
             {
@@ -51,7 +51,7 @@ const fetchAllAddress = async (req, res) => {
             data: addressList
         })
 
-    } catch (e) {
+    } catch (error) {
         console.log("Something went wrong in Add Address Controller", error)
         res.status(500).json(
             {
@@ -94,7 +94,7 @@ const editAddress = async (req, res) => {
             data: address
         })
 
-    } catch (e) {
+    } catch (error) {
         console.log("Something went wrong in Add Address Controller", error)
         res.status(500).json(
             {
@@ -135,7 +135,7 @@ const deleteAddress = async (req, res) => {
             message: "Address deleted successfully"
         })
 
-    } catch (e) {
+    } catch (error) {
         console.log("Something went wrong in Add Address Controller", error)
         res.status(500).json(
             {

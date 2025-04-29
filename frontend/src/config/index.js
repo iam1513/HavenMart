@@ -151,7 +151,7 @@ export const shoppingViewHeaderMenuItems = [
     },
     {
         id: 'accessories',
-        label: 'accessories',
+        label: 'Accessories',
         path: "/shop/listing"
     },
 
